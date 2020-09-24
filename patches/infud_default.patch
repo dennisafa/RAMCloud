@@ -1,0 +1,22 @@
+Return a default config if one is not found, for testing purposes
+
+From: Dennis Afanasev <dennis.afa@gmail.com>
+
+
+---
+ src/InfUdDriver.cc |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/InfUdDriver.cc b/src/InfUdDriver.cc
+index b03c60a3..b87f6490 100644
+--- a/src/InfUdDriver.cc
++++ b/src/InfUdDriver.cc
+@@ -311,7 +311,7 @@ InfUdDriver::readDriverConfigFile()
+             LOG(ERROR, "Ignored bad driver configuration: '%s'", sl.c_str());
+         }
+     }
+-    return ServiceLocator("infud:");
++    return ServiceLocator("infud:hca=mlx5_bond_0,port=1,eth=sl_services");
+ }
+ 
+ /**
