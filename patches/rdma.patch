@@ -1,0 +1,20 @@
+RDMA
+
+From: Dennis Afanasev <dennis.afa@gmail.com>
+
+
+---
+ config/driver.conf |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/config/driver.conf b/config/driver.conf
+index cd51a5aa..7d4ef676 100644
+--- a/config/driver.conf
++++ b/config/driver.conf
+@@ -4,5 +4,5 @@
+ 
+ # Configuration for Mellanox CX4 raw ethernet mode on CloudLab xl170 nodes with
+ # Ubuntu 18.04.
+-# infud:hca=mlx5_3,port=1,eth=ens1f1
++infud:hca=mlx5_0,port=1,eth=sl_services1
+ 
