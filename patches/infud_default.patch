@@ -16,7 +16,7 @@ index b03c60a3..b87f6490 100644
          }
      }
 -    return ServiceLocator("infud:");
-+    return ServiceLocator("infud:hca=mlx5_bond_0,port=1,eth=sl_services");
++    return ServiceLocator("infud:hca=mlx4_0,port=1,eth=enp8s0d1");
  }
  
  /**
