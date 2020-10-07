@@ -8,7 +8,7 @@ From: Dennis Afanasev <dennis.afa@gmail.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/src/InfUdDriver.cc b/src/InfUdDriver.cc
-index b03c60a3..b87f6490 100644
+index b03c60a3..eb73d94d 100644
 --- a/src/InfUdDriver.cc
 +++ b/src/InfUdDriver.cc
 @@ -311,7 +311,7 @@ InfUdDriver::readDriverConfigFile()

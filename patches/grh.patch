@@ -1,0 +1,28 @@
+
+
+From: Dennis Afanasev <dennis.afa@gmail.com>
+
+
+---
+ src/Infiniband.cc |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/src/Infiniband.cc b/src/Infiniband.cc
+index a2dcb59b..a5283762 100644
+--- a/src/Infiniband.cc
++++ b/src/Infiniband.cc
+@@ -639,11 +639,13 @@ Infiniband::QueuePair::plumb(QueuePairTuple *qpt)
+     qpa.rq_psn = qpt->getPsn();
+     qpa.max_dest_rd_atomic = 1;
+     qpa.min_rnr_timer = 12;
+-    qpa.ah_attr.is_global = 0;
++    qpa.ah_attr.is_global = 1;
+     qpa.ah_attr.dlid = qpt->getLid();
+     qpa.ah_attr.sl = 0;
++    qpa.ah_attr.grh.sgid_index = 0;
+     qpa.ah_attr.src_path_bits = 0;
+     qpa.ah_attr.port_num = downCast<uint8_t>(ibPhysicalPort);
++    LOG(ERROR, "\n Portnum %d \n qp_num %d \n rq_psn %d \n dlid %d \n", ibPhysicalPort, qpt->getQpn(), qpt->getPsn(), qpt->getLid());
+ 
+     r = ibv_modify_qp(qp, &qpa, IBV_QP_STATE |
+                                 IBV_QP_AV |

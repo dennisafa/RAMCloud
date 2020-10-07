@@ -8,7 +8,7 @@ From: Dennis Afanasev <dennis.afa@gmail.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/config/driver.conf b/config/driver.conf
-index cd51a5aa..7d4ef676 100644
+index cd51a5aa..3652d0de 100644
 --- a/config/driver.conf
 +++ b/config/driver.conf
 @@ -4,5 +4,5 @@
