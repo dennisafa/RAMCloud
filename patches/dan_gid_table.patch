@@ -36,6 +36,6 @@ index a5283762..fad0fc4e 100644
 +      gid_raw += std::to_string(qpa.ah_attr.grh.dgid.raw[i]);
 +    }
 +    LOG(ERROR, "gid.raw == %s", gid_raw.c_str());
-     LOG(ERROR, "\n Portnum %d \n qp_num %d \n rq_psn %d \n dlid %d \n", ibPhysicalPort, qpt->getQpn(), qpt->getPsn(), qpt->getLid());
+-    LOG(ERROR, "\n Portnum %d \n qp_num %d \n rq_psn %d \n dlid %d \n", ibPhysicalPort, qpt->getQpn(), qpt->getPsn(), qpt->getLid());
  
      r = ibv_modify_qp(qp, &qpa, IBV_QP_STATE |
