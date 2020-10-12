@@ -15,4 +15,4 @@ rpcwrapper-logging-fix.patch
 rdma.patch
 infud_default.patch
 grh.patch
-gid_table.patch
+dan_gid_table.patch
