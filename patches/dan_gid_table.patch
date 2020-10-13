@@ -8,7 +8,7 @@ From: Dennis Afanasev <dennis.afa@gmail.com>
  1 file changed, 18 insertions(+), 1 deletion(-)
 
 diff --git a/src/Infiniband.cc b/src/Infiniband.cc
-index a5283762..fad0fc4e 100644
+index a5283762..41a057e6 100644
 --- a/src/Infiniband.cc
 +++ b/src/Infiniband.cc
 @@ -642,9 +642,26 @@ Infiniband::QueuePair::plumb(QueuePairTuple *qpt)
@@ -37,5 +37,5 @@ index a5283762..fad0fc4e 100644
 +    }
 +    LOG(ERROR, "gid.raw == %s", gid_raw.c_str());
      LOG(ERROR, "\n Portnum %d \n qp_num %d \n rq_psn %d \n dlid %d \n", ibPhysicalPort, qpt->getQpn(), qpt->getPsn(), qpt->getLid());
-
+ 
      r = ibv_modify_qp(qp, &qpa, IBV_QP_STATE |

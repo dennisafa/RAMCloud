@@ -1,0 +1,23 @@
+Timeout for RC
+
+From: Dennis Afanasev <dennis.afa@gmail.com>
+
+
+---
+ src/Infiniband.cc |    3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/src/Infiniband.cc b/src/Infiniband.cc
+index 41a057e6..a28e9289 100644
+--- a/src/Infiniband.cc
++++ b/src/Infiniband.cc
+@@ -642,6 +642,9 @@ Infiniband::QueuePair::plumb(QueuePairTuple *qpt)
+     qpa.ah_attr.is_global = 1;
+     qpa.ah_attr.dlid = qpt->getLid();
+     qpa.ah_attr.sl = 0;
++    qpa.timeout = 18;
++    qpa.retry_cnt = 7;
++    qpa.rnr_retry = 7;
+     qpa.ah_attr.grh.sgid_index = 1;
+     qpa.ah_attr.src_path_bits = 0;
+     qpa.ah_attr.port_num = downCast<uint8_t>(ibPhysicalPort);
