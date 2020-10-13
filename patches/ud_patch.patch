@@ -1,0 +1,50 @@
+Path for UD datagrams
+
+From: Dennis Afanasev <dennis.afa@gmail.com>
+
+
+---
+ src/Infiniband.cc |   30 +++++++++++++++++++++---------
+ 1 file changed, 21 insertions(+), 9 deletions(-)
+
+diff --git a/src/Infiniband.cc b/src/Infiniband.cc
+index c74bdb66..3c533646 100644
+--- a/src/Infiniband.cc
++++ b/src/Infiniband.cc
+@@ -1018,15 +1018,27 @@ Infiniband::Address::getHandle() const
+ 
+     // Must allocate a new address handle. See also:
+     // https://www.rdmamojo.com/2012/09/22/ibv_create_ah/
+-    ibv_ah_attr attr = {
+-        .grh = {},
+-        .dlid = lid,
+-        .sl = 0,
+-        .src_path_bits = 0,
+-        .static_rate = 0,
+-        .is_global = 0,
+-        .port_num = downCast<uint8_t>(physicalPort)
+-    };
++    ibv_ah_attr attr;
++    memset(&attr, 0, sizeof(attr));
++    attr.is_global = 1;
++    attr.dlid = lid;
++    attr.sl = 0;
++    attr.grh.sgid_index = 1;
++    attr.src_path_bits = 0;
++    attr.port_num = downCast<uint8_t>(ibPhysicalPort);
++    const int rc = ibv_query_gid(infiniband.device.ctxt, attr.port_num, attr.grh.sgid_index, &attr.grh.dgid);
++
++    if (rc) {
++       const char* errorstr = strerror(rc);
++       LOG(ERROR, "failed to query GID index %d of port %d in device %s",
++          attr.grh.sgid_index,
++          attr.port_num,
++          ibv_get_device_name(infiniband.device.ctxt->device)
++      );
++      LOG(ERROR, "ibv_query_gid failed with errorstr %s", errorstr);
++      throw TransportException(HERE, rc);
++    }
++
+     infiniband.totalAddressHandleAllocCalls += 1;
+     uint64_t start = Cycles::rdtsc();
+     ah = ibv_create_ah(infiniband.pd.pd, &attr);
