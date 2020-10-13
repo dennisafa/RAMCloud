@@ -31,7 +31,7 @@ index c74bdb66..3c533646 100644
 +    attr.sl = 0;
 +    attr.grh.sgid_index = 1;
 +    attr.src_path_bits = 0;
-+    attr.port_num = downCast<uint8_t>(ibPhysicalPort);
++    attr.port_num = downCast<uint8_t>(physicalPort);
 +    const int rc = ibv_query_gid(infiniband.device.ctxt, attr.port_num, attr.grh.sgid_index, &attr.grh.dgid);
 +
 +    if (rc) {
