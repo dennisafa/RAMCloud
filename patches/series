@@ -17,3 +17,4 @@ infud_default.patch
 grh.patch
 dan_gid_table.patch
 timeout.patch
+comments.patch
