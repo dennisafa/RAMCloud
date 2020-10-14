@@ -1,0 +1,22 @@
+Physical port
+
+From: Dennis Afanasev <dennis.afa@gmail.com>
+
+
+---
+ src/Infiniband.cc |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/Infiniband.cc b/src/Infiniband.cc
+index 3c533646..92d841e3 100644
+--- a/src/Infiniband.cc
++++ b/src/Infiniband.cc
+@@ -1025,7 +1025,7 @@ Infiniband::Address::getHandle() const
+     attr.sl = 0;
+     attr.grh.sgid_index = 1;
+     attr.src_path_bits = 0;
+-    attr.port_num = downCast<uint8_t>(ibPhysicalPort);
++    attr.port_num = downCast<uint8_t>(physicalPort);
+     const int rc = ibv_query_gid(infiniband.device.ctxt, attr.port_num, attr.grh.sgid_index, &attr.grh.dgid);
+ 
+     if (rc) {
