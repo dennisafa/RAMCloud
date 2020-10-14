@@ -1,0 +1,23 @@
+Wrong arg
+
+From: Dennis Afanasev <dennis.afa@gmail.com>
+
+
+---
+ src/CoordinatorClient.cc |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/src/CoordinatorClient.cc b/src/CoordinatorClient.cc
+index 7e8c8bbd..0bf07498 100644
+--- a/src/CoordinatorClient.cc
++++ b/src/CoordinatorClient.cc
+@@ -102,8 +102,7 @@ EnlistServerRpc::EnlistServerRpc(Context* context, uint32_t preferredIndex,
+     request.append(localServiceLocator.c_str(),
+             reqHdr->serviceLocatorLength);
+ 
+-    RAMCLOUD_LOG(WARNING, "Parameters to EnlistServerRpc\n
+-    preferredIndex %d replacesId %d serviceMask %d readSpeed %d 
++    RAMCLOUD_LOG(WARNING, "Parameters to EnlistServerRpc preferredIndex %d replacesId %d serviceMask %d readSpeed %d 
+     serviceLocatorLength %d totalSize %d", reqHdr->preferredIndex, reqHdr->replacesId, reqHdr->serviceMask,
+     reqHdr->readSpeed, reqHdr->serviceLocatorLength, sizeof(reqHdr));
+ 
