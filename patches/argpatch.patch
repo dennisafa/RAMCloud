@@ -8,7 +8,7 @@ From: Dennis Afanasev <dennis.afa@gmail.com>
  1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/src/CoordinatorClient.cc b/src/CoordinatorClient.cc
-index 0bf07498..22b19e02 100644
+index 0bf07498..77891c6b 100644
 --- a/src/CoordinatorClient.cc
 +++ b/src/CoordinatorClient.cc
 @@ -102,8 +102,7 @@ EnlistServerRpc::EnlistServerRpc(Context* context, uint32_t preferredIndex,
@@ -17,7 +17,7 @@ index 0bf07498..22b19e02 100644
  
 -    RAMCLOUD_LOG(WARNING, "Parameters to EnlistServerRpc preferredIndex %d replacesId %d serviceMask %d readSpeed %d 
 -    serviceLocatorLength %d totalSize %d", reqHdr->preferredIndex, reqHdr->replacesId, reqHdr->serviceMask,
-+    RAMCLOUD_LOG(WARNING, "Parameters to EnlistServerRpc preferredIndex %d replacesId %d serviceMask %d readSpeed %d serviceLocatorLength %d totalSize %d", reqHdr->preferredIndex, reqHdr->replacesId, reqHdr->serviceMask,
++    RAMCLOUD_LOG(WARNING, "Parameters to EnlistServerRpc preferredIndex %d replacesId %lu serviceMask %d readSpeed %d serviceLocatorLength %d totalSize %lu", reqHdr->preferredIndex, reqHdr->replacesId, reqHdr->serviceMask,
      reqHdr->readSpeed, reqHdr->serviceLocatorLength, sizeof(reqHdr));
  
      send();
