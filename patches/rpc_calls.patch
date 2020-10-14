@@ -1,0 +1,26 @@
+Wondering what we send for EnlistServerRPC
+
+From: Dennis Afanasev <dennis.afa@gmail.com>
+
+
+---
+ src/CoordinatorClient.cc |    6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/src/CoordinatorClient.cc b/src/CoordinatorClient.cc
+index bfc1775b..7e8c8bbd 100644
+--- a/src/CoordinatorClient.cc
++++ b/src/CoordinatorClient.cc
+@@ -101,6 +101,12 @@ EnlistServerRpc::EnlistServerRpc(Context* context, uint32_t preferredIndex,
+         downCast<uint32_t>(localServiceLocator.length() + 1);
+     request.append(localServiceLocator.c_str(),
+             reqHdr->serviceLocatorLength);
++
++    RAMCLOUD_LOG(WARNING, "Parameters to EnlistServerRpc\n
++    preferredIndex %d replacesId %d serviceMask %d readSpeed %d 
++    serviceLocatorLength %d totalSize %d", reqHdr->preferredIndex, reqHdr->replacesId, reqHdr->serviceMask,
++    reqHdr->readSpeed, reqHdr->serviceLocatorLength, sizeof(reqHdr));
++
+     send();
+ }
+ 
