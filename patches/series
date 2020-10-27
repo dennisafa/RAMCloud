@@ -24,3 +24,4 @@ wrongarg.patch
 argpatch.patch
 phys_port.patch
 transport_segfault.patch
+debug_rpc.patch

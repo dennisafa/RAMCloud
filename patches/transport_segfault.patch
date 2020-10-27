@@ -16,7 +16,7 @@ index 94f732fc..d9bbb24a 100644
                  try {
                      Dispatch::Lock lock(context->dispatch);
 -                    transports[i] = factory->createTransport(context, NULL);
-+                    transports[i] = factory->createTransport(context, serviceLocator);
++                    transports[i] = factory->createTransport(context, const_cast<const RAMCloud::ServiceLocator*>(&locator));
                      for (uint32_t j = 0; j < registeredBases.size(); j++) {
                          transports[i]->registerMemory(registeredBases[j],
                                                        registeredSizes[j]);

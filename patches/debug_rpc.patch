@@ -1,0 +1,43 @@
+Debugging the failed RPC calls
+
+From: dennisafa <dennis.afa@gmail.com>
+
+
+---
+ src/InfUdDriver.cc |   10 +++++-----
+ src/Service.cc     |    1 +
+ 2 files changed, 6 insertions(+), 5 deletions(-)
+
+diff --git a/src/InfUdDriver.cc b/src/InfUdDriver.cc
+index 4587d760..85c86a66 100644
+--- a/src/InfUdDriver.cc
++++ b/src/InfUdDriver.cc
+@@ -105,11 +105,11 @@ InfUdDriver::InfUdDriver(Context* context, const ServiceLocator *sl)
+     , zeroCopyEnd(NULL)
+     , zeroCopyRegion(NULL)
+ {
+-    ServiceLocator config = readDriverConfigFile();
+-    const char* ibDeviceName = config.getOption<const char*>("hca", NULL);
+-    const char* ethIfName = config.getOption<const char*>("eth", NULL);
+-    ibPhysicalPort = config.getOption<int>("port", 1);
+-    LOG(NOTICE, "InfUdDriver config: %s", config.getOriginalString().c_str());
++    //ServiceLocator config = readDriverConfigFile();
++    const char* ibDeviceName = sl->getOption<const char*>("hca", NULL);
++    const char* ethIfName = sl->getOption<const char*>("eth", NULL);
++    ibPhysicalPort = sl->getOption<int>("port", 1);
++    LOG(NOTICE, "InfUdDriver config: %s", sl->getOriginalString().c_str());
+ 
+     // Open and initialize the specified device.
+     infiniband = realInfiniband.construct(ibDeviceName);
+diff --git a/src/Service.cc b/src/Service.cc
+index 377f0c75..d5ab0440 100644
+--- a/src/Service.cc
++++ b/src/Service.cc
+@@ -144,6 +144,7 @@ Service::handleRpc(Context* context, Rpc* rpc) {
+         prepareErrorResponse(rpc->replyPayload, STATUS_MESSAGE_TOO_SHORT);
+         return;
+     }
++
+     if ((header->service >= WireFormat::INVALID_SERVICE)
+             || (context->services[header->service] == NULL)) {
+         prepareErrorResponse(rpc->replyPayload, STATUS_SERVICE_NOT_AVAILABLE);
