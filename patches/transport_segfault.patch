@@ -1,0 +1,22 @@
+We seg fault when trying to create a client with a particular service locator.
+
+From: Dennis Afanasev <dennis.afa@gmail.com>
+
+
+---
+ src/TransportManager.cc |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/TransportManager.cc b/src/TransportManager.cc
+index 94f732fc..d9bbb24a 100644
+--- a/src/TransportManager.cc
++++ b/src/TransportManager.cc
+@@ -470,7 +470,7 @@ TransportManager::openSessionInternal(const string& serviceLocator)
+                 // exist on this machine).
+                 try {
+                     Dispatch::Lock lock(context->dispatch);
+-                    transports[i] = factory->createTransport(context, NULL);
++                    transports[i] = factory->createTransport(context, serviceLocator);
+                     for (uint32_t j = 0; j < registeredBases.size(); j++) {
+                         transports[i]->registerMemory(registeredBases[j],
+                                                       registeredSizes[j]);
