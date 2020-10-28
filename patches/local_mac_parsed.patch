@@ -1,0 +1,166 @@
+Try to see if we are not hitting the localMac path
+
+From: Dennis Afanasev <dennis.afa@gmail.com>
+
+
+---
+ src/BasicTransport.cc   |    2 +-
+ src/DpdkDriver.h        |    2 +-
+ src/Driver.h            |    2 +-
+ src/HomaTransport.cc    |    2 +-
+ src/InfUdDriver.cc      |    3 +++
+ src/InfUdDriver.h       |    4 ++--
+ src/InfUdDriverTest.cc  |    2 +-
+ src/MockDriver.h        |    2 +-
+ src/SolarFlareDriver.cc |    2 +-
+ src/SolarFlareDriver.h  |    2 +-
+ src/UdpDriver.h         |    2 +-
+ 11 files changed, 14 insertions(+), 11 deletions(-)
+
+diff --git a/src/BasicTransport.cc b/src/BasicTransport.cc
+index 43b3dbcf..3c705305 100644
+--- a/src/BasicTransport.cc
++++ b/src/BasicTransport.cc
+@@ -624,7 +624,7 @@ BasicTransport::Session::Session(BasicTransport* t,
+         }
+         LOG(ERROR, "Locator mac address is %s",
+                         locator->getOption("mac").c_str());
+-        serverAddress = t->driver->newAddress(locator);
++        serverAddress = t->driver->newAddress(locator, true);
+     }
+     catch (const Exception& e) {
+         LOG(NOTICE, "%s", e.message.c_str());
+diff --git a/src/DpdkDriver.h b/src/DpdkDriver.h
+index 4f2b874c..edac0334 100644
+--- a/src/DpdkDriver.h
++++ b/src/DpdkDriver.h
+@@ -78,7 +78,7 @@ class DpdkDriver : public Driver
+                             TransmitQueueState* txQueueState = NULL);
+     virtual string getServiceLocator();
+ 
+-    virtual Address* newAddress(const ServiceLocator* serviceLocator)
++    virtual Address* newAddress(const ServiceLocator* serviceLocator, [[maybe_unused]]bool is_nfapp)
+     {
+         return new MacAddress(serviceLocator->getOption<const char*>("mac"));
+     }
+diff --git a/src/Driver.h b/src/Driver.h
+index 3a980cb1..04039d0c 100644
+--- a/src/Driver.h
++++ b/src/Driver.h
+@@ -379,7 +379,7 @@ class Driver {
+      * \throw BadValueException
+      *      Service locator option malformed.
+      */
+-    virtual Address* newAddress(const ServiceLocator* serviceLocator) = 0;
++    virtual Address* newAddress(const ServiceLocator* serviceLocator, [[maybe_unused]]bool is_nfapp) = 0;
+ 
+     /**
+      * Checks to see if any packets have arrived that have not already
+diff --git a/src/HomaTransport.cc b/src/HomaTransport.cc
+index e824b37d..7b2e3e3a 100644
+--- a/src/HomaTransport.cc
++++ b/src/HomaTransport.cc
+@@ -812,7 +812,7 @@ HomaTransport::Session::Session(HomaTransport* t,
+     , aborted(false)
+ {
+     try {
+-        serverAddress = t->driver->newAddress(locator);
++        serverAddress = t->driver->newAddress(locator, false);
+     }
+     catch (const Exception& e) {
+         LOG(NOTICE, "%s", e.message.c_str());
+diff --git a/src/InfUdDriver.cc b/src/InfUdDriver.cc
+index 85c86a66..d5ebade3 100644
+--- a/src/InfUdDriver.cc
++++ b/src/InfUdDriver.cc
+@@ -138,7 +138,10 @@ InfUdDriver::InfUdDriver(Context* context, const ServiceLocator *sl)
+     mtu = ethernet ? (1500 + ETH_HEADER_SIZE) :
+             infiniband->getMtu(ibPhysicalPort);
+     if (ethernet) {
++        LOG(NOTICE, "Using localMac");
+         localMac.construct(NetUtil::getLocalMac(ethIfName).c_str());
++    } else {
++        LOG(NOTICE, "We are not using localMac");
+     }
+ 
+     // Setup queue estimator
+diff --git a/src/InfUdDriver.h b/src/InfUdDriver.h
+index b4db475e..8e418917 100644
+--- a/src/InfUdDriver.h
++++ b/src/InfUdDriver.h
+@@ -59,8 +59,8 @@ class InfUdDriver : public Driver {
+                             TransmitQueueState* txQueueState = NULL);
+     virtual string getServiceLocator();
+ 
+-    virtual Address* newAddress(const ServiceLocator* serviceLocator) {
+-        if (localMac) {//
++    virtual Address* newAddress(const ServiceLocator* serviceLocator, [[maybe_unused]] bool is_nfapp) {
++        if (localMac || is_nfapp) {//
+             return new MacAddress(
+                 serviceLocator->getOption<const char*>("mac"));
+         } else {
+diff --git a/src/InfUdDriverTest.cc b/src/InfUdDriverTest.cc
+index 73d7198d..562a9c05 100644
+--- a/src/InfUdDriverTest.cc
++++ b/src/InfUdDriverTest.cc
+@@ -66,7 +66,7 @@ TEST_F(InfUdDriverTest, basics) {
+     InfUdDriver server(&context, &serverLocator);
+     InfUdDriver *client = new InfUdDriver(&context, NULL);
+     ServiceLocator sl(server.getServiceLocator());
+-    Driver::Address* serverAddress = client->newAddress(&sl);
++    Driver::Address* serverAddress = client->newAddress(&sl, false);
+ 
+     Buffer message;
+     const char *testString = "This is a sample message";
+diff --git a/src/MockDriver.h b/src/MockDriver.h
+index d0e1a8dd..c6bb8f42 100644
+--- a/src/MockDriver.h
++++ b/src/MockDriver.h
+@@ -130,7 +130,7 @@ class MockDriver : public Driver {
+         incomingPackets.push_back(packet);
+     }
+ 
+-    virtual Address* newAddress(const ServiceLocator* serviceLocator) {
++    virtual Address* newAddress(const ServiceLocator* serviceLocator, [[maybe_unused]] bool is_nfapp) {
+         return new MockAddress(serviceLocator->originalString);
+     }
+ 
+diff --git a/src/SolarFlareDriver.cc b/src/SolarFlareDriver.cc
+index fc32768a..0268f298 100644
+--- a/src/SolarFlareDriver.cc
++++ b/src/SolarFlareDriver.cc
+@@ -517,7 +517,7 @@ SolarFlareDriver::release(char* payload)
+ 
+ /// See docs in the ``Driver'' class.
+ Driver::Address*
+-SolarFlareDriver::newAddress(const ServiceLocator& serviceLocator) {
++SolarFlareDriver::newAddress(const ServiceLocator& serviceLocator, [[maybe_unused]] bool is_nfapp) {
+     return new MacIpAddress(serviceLocator);
+ }
+ 
+diff --git a/src/SolarFlareDriver.h b/src/SolarFlareDriver.h
+index 8f70e7d9..b95cbee1 100644
+--- a/src/SolarFlareDriver.h
++++ b/src/SolarFlareDriver.h
+@@ -60,7 +60,7 @@ class SolarFlareDriver : public Driver {
+                             int priority = 0,
+                             TransmitQueueState* txQueueState = NULL);
+     virtual string getServiceLocator();
+-    virtual Driver::Address* newAddress(const ServiceLocator& serviceLocator);
++    virtual Driver::Address* newAddress(const ServiceLocator& serviceLocator, [[maybe_unused]] bool is_nfapp);
+ 
+     /// Defines the total number of buffers that the driver is allowed to pack
+     /// in TX ring. Large values increases the latency for small objects.
+diff --git a/src/UdpDriver.h b/src/UdpDriver.h
+index 8fd73245..8543d36a 100644
+--- a/src/UdpDriver.h
++++ b/src/UdpDriver.h
+@@ -55,7 +55,7 @@ class UdpDriver : public Driver {
+                             TransmitQueueState* txQueueState = NULL);
+     virtual string getServiceLocator();
+ 
+-    virtual Address* newAddress(const ServiceLocator* serviceLocator) {
++    virtual Address* newAddress(const ServiceLocator* serviceLocator, [[maybe_unused]] bool is_nfapp) {
+         return new IpAddress(serviceLocator);
+     }
+ 
