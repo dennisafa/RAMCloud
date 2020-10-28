@@ -25,3 +25,4 @@ argpatch.patch
 phys_port.patch
 transport_segfault.patch
 debug_rpc.patch
+debug_basic_parsing.patch

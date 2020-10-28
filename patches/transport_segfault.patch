@@ -8,7 +8,7 @@ From: Dennis Afanasev <dennis.afa@gmail.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/src/TransportManager.cc b/src/TransportManager.cc
-index 94f732fc..d9bbb24a 100644
+index 94f732fc..980331e3 100644
 --- a/src/TransportManager.cc
 +++ b/src/TransportManager.cc
 @@ -470,7 +470,7 @@ TransportManager::openSessionInternal(const string& serviceLocator)

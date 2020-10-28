@@ -1,0 +1,42 @@
+Debugging the mac address parsing failure
+
+From: Dennis Afanasev <dennis.afa@gmail.com>
+
+
+---
+ src/BasicTransport.cc |    8 ++++++++
+ src/InfUdDriver.h     |    2 +-
+ 2 files changed, 9 insertions(+), 1 deletion(-)
+
+diff --git a/src/BasicTransport.cc b/src/BasicTransport.cc
+index 8073d8f0..43b3dbcf 100644
+--- a/src/BasicTransport.cc
++++ b/src/BasicTransport.cc
+@@ -616,6 +616,14 @@ BasicTransport::Session::Session(BasicTransport* t,
+     , aborted(false)
+ {
+     try {
++        if (t == NULL) {
++            LOG(ERROR, "BasicTransport object is null");
++        }
++        if (t->driver == NULL) {
++            LOG(ERROR, "Driver is null\n");
++        }
++        LOG(ERROR, "Locator mac address is %s",
++                        locator->getOption("mac").c_str());
+         serverAddress = t->driver->newAddress(locator);
+     }
+     catch (const Exception& e) {
+diff --git a/src/InfUdDriver.h b/src/InfUdDriver.h
+index 2f856a3b..b4db475e 100644
+--- a/src/InfUdDriver.h
++++ b/src/InfUdDriver.h
+@@ -60,7 +60,7 @@ class InfUdDriver : public Driver {
+     virtual string getServiceLocator();
+ 
+     virtual Address* newAddress(const ServiceLocator* serviceLocator) {
+-        if (localMac) {
++        if (localMac) {//
+             return new MacAddress(
+                 serviceLocator->getOption<const char*>("mac"));
+         } else {
