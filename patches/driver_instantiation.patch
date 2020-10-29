@@ -1,0 +1,58 @@
+Check to see if driver is being created
+
+From: Dennis Afanasev <dennis.afa@gmail.com>
+
+
+---
+ src/TransportManager.cc |    9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/src/TransportManager.cc b/src/TransportManager.cc
+index 980331e3..05508f50 100644
+--- a/src/TransportManager.cc
++++ b/src/TransportManager.cc
+@@ -104,6 +104,7 @@ static struct BasicInfUdTransportFactory : public TransportFactory {
+         : TransportFactory("basic+infinibandud", "basic+infud") {}
+     Transport* createTransport(Context* context,
+             const ServiceLocator* localServiceLocator) {
++                LOG(WARNING, "Creating BasicInfudTransportFactory driver object");
+         return new BasicTransport(context, localServiceLocator,
+                 new InfUdDriver(context, localServiceLocator), true,
+                 generateRandom());
+@@ -451,6 +452,7 @@ TransportManager::openSessionInternal(const string& serviceLocator)
+     // Collects error messages from all the transports that tried to
+     // open a session from this locator.
+     string messages;
++    ServiceLocator locator_test("basic+infud: hca=mlx5_4, eth=ens2f0np0v1, port=1");
+ 
+     // Iterate over all of the sub-locators, looking for a transport that
+     // can handle its protocol.
+@@ -460,6 +462,7 @@ TransportManager::openSessionInternal(const string& serviceLocator)
+         for (uint32_t i = 0; i < transportFactories.size(); i++) {
+             TransportFactory* factory = transportFactories[i];
+             if (!factory->supports(locator.getProtocol().c_str())) {
++                LOG(WARNING, "Transport not supported: %s", locator.getProtocol().c_str());
+                 continue;
+             }
+ 
+@@ -470,7 +473,8 @@ TransportManager::openSessionInternal(const string& serviceLocator)
+                 // exist on this machine).
+                 try {
+                     Dispatch::Lock lock(context->dispatch);
+-                    transports[i] = factory->createTransport(context, const_cast<const RAMCloud::ServiceLocator*>(&locator));
++                    LOG(WARNING, "Creating with transport string %s", locator_test.getOriginalString());
++                    transports[i] = factory->createTransport(context, const_cast<const RAMCloud::ServiceLocator*>(&locator_test));
+                     for (uint32_t j = 0; j < registeredBases.size(); j++) {
+                         transports[i]->registerMemory(registeredBases[j],
+                                                       registeredSizes[j]);
+@@ -481,8 +485,9 @@ TransportManager::openSessionInternal(const string& serviceLocator)
+             }
+ 
+             try {
++                LOG(WARNING, "Creating session with %s", locator_test.getOriginalString());
+                 Transport::SessionRef session = transports[i]->getSession(
+-                        &locator, sessionTimeoutMs);
++                        &locator_test, sessionTimeoutMs);
+                 if (isServer) {
+                     return new WorkerSession(context, session);
+                 }

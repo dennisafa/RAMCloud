@@ -65,7 +65,7 @@ index e824b37d..7b2e3e3a 100644
  {
      try {
 -        serverAddress = t->driver->newAddress(locator);
-+        serverAddress = t->driver->newAddress(locator, false);
++        serverAddress = t->driver->newAddress(locator, [[maybe_unused]] false);
      }
      catch (const Exception& e) {
          LOG(NOTICE, "%s", e.message.c_str());

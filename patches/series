@@ -27,3 +27,4 @@ transport_segfault.patch
 debug_rpc.patch
 debug_basic_parsing.patch
 local_mac_parsed.patch
+driver_instantiation.patch
