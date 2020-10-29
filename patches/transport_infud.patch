@@ -1,0 +1,44 @@
+Debuggin
+
+From: Dennis Afanasev <dennis.afa@gmail.com>
+
+
+---
+ src/TransportManager.cc |   10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/src/TransportManager.cc b/src/TransportManager.cc
+index 05508f50..d25d7f2e 100644
+--- a/src/TransportManager.cc
++++ b/src/TransportManager.cc
+@@ -461,8 +461,8 @@ TransportManager::openSessionInternal(const string& serviceLocator)
+     foreach (ServiceLocator& locator, locators) {
+         for (uint32_t i = 0; i < transportFactories.size(); i++) {
+             TransportFactory* factory = transportFactories[i];
+-            if (!factory->supports(locator.getProtocol().c_str())) {
+-                LOG(WARNING, "Transport not supported: %s", locator.getProtocol().c_str());
++            if (!factory->supports(locator_test.getProtocol().c_str())) {
++                LOG(WARNING, "Transport not supported: %s", locator_test.getProtocol().c_str());
+                 continue;
+             }
+ 
+@@ -473,7 +473,7 @@ TransportManager::openSessionInternal(const string& serviceLocator)
+                 // exist on this machine).
+                 try {
+                     Dispatch::Lock lock(context->dispatch);
+-                    LOG(WARNING, "Creating with transport string %s", locator_test.getOriginalString());
++                    LOG(WARNING, "Creating with transport string %s", locator_test.getOriginalString().c_str());
+                     transports[i] = factory->createTransport(context, const_cast<const RAMCloud::ServiceLocator*>(&locator_test));
+                     for (uint32_t j = 0; j < registeredBases.size(); j++) {
+                         transports[i]->registerMemory(registeredBases[j],
+@@ -485,7 +485,9 @@ TransportManager::openSessionInternal(const string& serviceLocator)
+             }
+ 
+             try {
+-                LOG(WARNING, "Creating session with %s", locator_test.getOriginalString());
++                LOG(WARNING, "Creating session with %s", locator_test.getOriginalString().c_str());
++                LOG(WARNING, "Transport service locator {}", transports[i].getServiceLocator());
++                LOG(WARNING, "Transport service locator {}", transports[i].getClientLocator());
+                 Transport::SessionRef session = transports[i]->getSession(
+                         &locator_test, sessionTimeoutMs);
+                 if (isServer) {
