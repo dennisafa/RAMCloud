@@ -1,0 +1,22 @@
+Remove [[maybe_unused]]
+
+From: dennisafa <dennis.afa@gmail.com>
+
+
+---
+ src/HomaTransport.cc |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/HomaTransport.cc b/src/HomaTransport.cc
+index 7b2e3e3a..6af63c0b 100644
+--- a/src/HomaTransport.cc
++++ b/src/HomaTransport.cc
+@@ -812,7 +812,7 @@ HomaTransport::Session::Session(HomaTransport* t,
+     , aborted(false)
+ {
+     try {
+-        serverAddress = t->driver->newAddress(locator, [[maybe_unused]] false);
++        serverAddress = t->driver->newAddress(locator, false);
+     }
+     catch (const Exception& e) {
+         LOG(NOTICE, "%s", e.message.c_str());
