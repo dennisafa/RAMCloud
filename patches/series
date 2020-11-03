@@ -30,3 +30,4 @@ local_mac_parsed.patch
 driver_instantiation.patch
 transport_infud.patch
 more_driver_issues.patch
+client_locator.patch

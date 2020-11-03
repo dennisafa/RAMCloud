@@ -1,0 +1,21 @@
+Edit client locator bug
+
+From: dennisafa <dennis.afa@gmail.com>
+
+
+---
+ src/TransportManager.cc |    1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/src/TransportManager.cc b/src/TransportManager.cc
+index 79081720..2309e275 100644
+--- a/src/TransportManager.cc
++++ b/src/TransportManager.cc
+@@ -487,7 +487,6 @@ TransportManager::openSessionInternal(const string& serviceLocator)
+             try {
+                 LOG(WARNING, "Creating session with %s", locator_test.getOriginalString().c_str());
+                 LOG(WARNING, "Transport service locator {}", transports[i]->getServiceLocator());
+-                LOG(WARNING, "Transport client locator {}", transports[i]->getClientLocator());
+                 Transport::SessionRef session = transports[i]->getSession(
+                         &locator_test, sessionTimeoutMs);
+                 if (isServer) {
