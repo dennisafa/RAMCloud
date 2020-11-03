@@ -1,0 +1,78 @@
+Eugh
+
+From: dennisafa <dennis.afa@gmail.com>
+
+
+---
+ src/DpdkDriver.h        |    1 +
+ src/InfUdDriver.h       |    4 +++-
+ src/TransportManager.cc |    6 +++---
+ src/UdpDriver.h         |    1 +
+ 4 files changed, 8 insertions(+), 4 deletions(-)
+
+diff --git a/src/DpdkDriver.h b/src/DpdkDriver.h
+index edac0334..43aa32c1 100644
+--- a/src/DpdkDriver.h
++++ b/src/DpdkDriver.h
+@@ -80,6 +80,7 @@ class DpdkDriver : public Driver
+ 
+     virtual Address* newAddress(const ServiceLocator* serviceLocator, [[maybe_unused]]bool is_nfapp)
+     {
++      printf("NewAddress from DPDK call\n");
+         return new MacAddress(serviceLocator->getOption<const char*>("mac"));
+     }
+ 
+diff --git a/src/InfUdDriver.h b/src/InfUdDriver.h
+index 8e418917..d3fb819d 100644
+--- a/src/InfUdDriver.h
++++ b/src/InfUdDriver.h
+@@ -60,10 +60,12 @@ class InfUdDriver : public Driver {
+     virtual string getServiceLocator();
+ 
+     virtual Address* newAddress(const ServiceLocator* serviceLocator, [[maybe_unused]] bool is_nfapp) {
+-        if (localMac || is_nfapp) {//
++        if (localMac || is_nfapp) {
++            printf("Getting mac option\n");
+             return new MacAddress(
+                 serviceLocator->getOption<const char*>("mac"));
+         } else {
++            printf("Allocating new infiniband object\n");
+             Infiniband::Address ibAddress(*infiniband, ibPhysicalPort,
+                     serviceLocator);
+             return new Address(ibAddress.getHandle(), ibAddress.getQpn());
+diff --git a/src/TransportManager.cc b/src/TransportManager.cc
+index d25d7f2e..79081720 100644
+--- a/src/TransportManager.cc
++++ b/src/TransportManager.cc
+@@ -452,7 +452,7 @@ TransportManager::openSessionInternal(const string& serviceLocator)
+     // Collects error messages from all the transports that tried to
+     // open a session from this locator.
+     string messages;
+-    ServiceLocator locator_test("basic+infud: hca=mlx5_4, eth=ens2f0np0v1, port=1");
++    ServiceLocator locator_test("basic+infud:mac=");
+ 
+     // Iterate over all of the sub-locators, looking for a transport that
+     // can handle its protocol.
+@@ -486,8 +486,8 @@ TransportManager::openSessionInternal(const string& serviceLocator)
+ 
+             try {
+                 LOG(WARNING, "Creating session with %s", locator_test.getOriginalString().c_str());
+-                LOG(WARNING, "Transport service locator {}", transports[i].getServiceLocator());
+-                LOG(WARNING, "Transport service locator {}", transports[i].getClientLocator());
++                LOG(WARNING, "Transport service locator {}", transports[i]->getServiceLocator());
++                LOG(WARNING, "Transport client locator {}", transports[i]->getClientLocator());
+                 Transport::SessionRef session = transports[i]->getSession(
+                         &locator_test, sessionTimeoutMs);
+                 if (isServer) {
+diff --git a/src/UdpDriver.h b/src/UdpDriver.h
+index 8543d36a..0548b4c8 100644
+--- a/src/UdpDriver.h
++++ b/src/UdpDriver.h
+@@ -56,6 +56,7 @@ class UdpDriver : public Driver {
+     virtual string getServiceLocator();
+ 
+     virtual Address* newAddress(const ServiceLocator* serviceLocator, [[maybe_unused]] bool is_nfapp) {
++        printf("newAddress from UDP driver\n");
+         return new IpAddress(serviceLocator);
+     }
+ 
