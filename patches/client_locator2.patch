@@ -1,0 +1,30 @@
+edit
+
+From: dennisafa <dennis.afa@gmail.com>
+
+
+---
+ src/TransportManager.cc |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/src/TransportManager.cc b/src/TransportManager.cc
+index 2309e275..901593b5 100644
+--- a/src/TransportManager.cc
++++ b/src/TransportManager.cc
+@@ -452,7 +452,7 @@ TransportManager::openSessionInternal(const string& serviceLocator)
+     // Collects error messages from all the transports that tried to
+     // open a session from this locator.
+     string messages;
+-    ServiceLocator locator_test("basic+infud:mac=");
++    ServiceLocator locator_test("basic+infud:mac=96:62:d5:cd:6b:c8");
+ 
+     // Iterate over all of the sub-locators, looking for a transport that
+     // can handle its protocol.
+@@ -486,7 +486,6 @@ TransportManager::openSessionInternal(const string& serviceLocator)
+ 
+             try {
+                 LOG(WARNING, "Creating session with %s", locator_test.getOriginalString().c_str());
+-                LOG(WARNING, "Transport service locator {}", transports[i]->getServiceLocator());
+                 Transport::SessionRef session = transports[i]->getSession(
+                         &locator_test, sessionTimeoutMs);
+                 if (isServer) {
