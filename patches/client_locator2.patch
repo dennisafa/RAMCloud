@@ -16,7 +16,7 @@ index 2309e275..901593b5 100644
      // open a session from this locator.
      string messages;
 -    ServiceLocator locator_test("basic+infud:mac=");
-+    ServiceLocator locator_test("basic+infud:mac=96:62:d5:cd:6b:c8");
++    ServiceLocator locator_test("basic+infud:mac=b8:59:9f:14:44:b4");
  
      // Iterate over all of the sub-locators, looking for a transport that
      // can handle its protocol.
