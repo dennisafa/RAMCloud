@@ -1,0 +1,62 @@
+Assign the dispatch thread its own isolated core
+
+From: nobody <dennis.afa@gmail.com>
+
+
+---
+ src/Dispatch.cc |    3 ++-
+ src/Dispatch.h  |   13 +++++++++++++
+ 2 files changed, 15 insertions(+), 1 deletion(-)
+
+diff --git a/src/Dispatch.cc b/src/Dispatch.cc
+index eff06baa..3f80c670 100644
+--- a/src/Dispatch.cc
++++ b/src/Dispatch.cc
+@@ -31,7 +31,7 @@
+ // Uncomment to print out a human readable name for any poller that takes longer
+ // than slowPollerCycles to complete. Useful for determining which poller is
+ // responsible for "Long gap" messages.
+-// #define DEBUG_SLOW_POLLERS 1
++#define DEBUG_SLOW_POLLERS 1
+ 
+ namespace RAMCloud {
+ 
+@@ -296,6 +296,7 @@ Dispatch::run()
+     PerfStats::registerStats(&PerfStats::threadStats);
+     uint64_t prev = Cycles::rdtsc();
+     int prevResult = 0;
++    stick_this_thread_to_core(10);
+     while (true) {
+         int r = poll();
+         if (prevResult > 0) {
+diff --git a/src/Dispatch.h b/src/Dispatch.h
+index 9e5134f7..342efc9d 100644
+--- a/src/Dispatch.h
++++ b/src/Dispatch.h
+@@ -22,6 +22,7 @@
+ #include <cstdatomic>
+ #endif
+ #include <thread>
++#include <unistd.h>
+ 
+ #include "Common.h"
+ #include "Atomic.h"
+@@ -66,6 +67,18 @@ class Dispatch {
+ 
+     int poll();
+     void run() __attribute__ ((noreturn));
++    int stick_this_thread_to_core(int core_id) {
++        int num_cores = sysconf(_SC_NPROCESSORS_ONLN);
++        if (core_id < 0 || core_id >= num_cores)
++          return EINVAL;
++
++        cpu_set_t cpuset;
++        CPU_ZERO(&cpuset);
++        CPU_SET(core_id, &cpuset);
++
++        pthread_t current_thread = pthread_self();    
++        return pthread_setaffinity_np(current_thread, sizeof(cpu_set_t), &cpuset);
++    }
+ 
+     /// The return value from rdtsc at the beginning of the last call to
+     /// #poll.  May be read from multiple threads, so must be volatile.
