@@ -33,3 +33,4 @@ more_driver_issues.patch
 client_locator.patch
 client_locator2.patch
 homa_transport_unused.patch
+use_default_locator.patch

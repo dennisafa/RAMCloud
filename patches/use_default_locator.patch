@@ -1,0 +1,55 @@
+Using the default serviceLocator for client
+
+From: nobody <dennis.afa@gmail.com>
+
+
+---
+ src/TransportManager.cc |   13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
+
+diff --git a/src/TransportManager.cc b/src/TransportManager.cc
+index aa576bb5..fadf7a6f 100644
+--- a/src/TransportManager.cc
++++ b/src/TransportManager.cc
+@@ -452,7 +452,6 @@ TransportManager::openSessionInternal(const string& serviceLocator)
+     // Collects error messages from all the transports that tried to
+     // open a session from this locator.
+     string messages;
+-    ServiceLocator locator_test("basic+infud:mac=b8:59:9f:14:44:b4");
+ 
+     // Iterate over all of the sub-locators, looking for a transport that
+     // can handle its protocol.
+@@ -461,8 +460,8 @@ TransportManager::openSessionInternal(const string& serviceLocator)
+     foreach (ServiceLocator& locator, locators) {
+         for (uint32_t i = 0; i < transportFactories.size(); i++) {
+             TransportFactory* factory = transportFactories[i];
+-            if (!factory->supports(locator_test.getProtocol().c_str())) {
+-                LOG(WARNING, "Transport not supported: %s", locator_test.getProtocol().c_str());
++            if (!factory->supports(locator.getProtocol().c_str())) {
++                LOG(WARNING, "Transport not supported: %s", locator.getProtocol().c_str());
+                 continue;
+             }
+ 
+@@ -473,8 +472,8 @@ TransportManager::openSessionInternal(const string& serviceLocator)
+                 // exist on this machine).
+                 try {
+                     Dispatch::Lock lock(context->dispatch);
+-                    LOG(WARNING, "Creating with transport string %s", locator_test.getOriginalString().c_str());
+-                    transports[i] = factory->createTransport(context, const_cast<const RAMCloud::ServiceLocator*>(&locator_test));
++                    LOG(WARNING, "Creating with transport string %s", locator.getOriginalString().c_str());
++                    transports[i] = factory->createTransport(context, const_cast<const RAMCloud::ServiceLocator*>(&locator));
+                     for (uint32_t j = 0; j < registeredBases.size(); j++) {
+                         transports[i]->registerMemory(registeredBases[j],
+                                                       registeredSizes[j]);
+@@ -485,9 +484,9 @@ TransportManager::openSessionInternal(const string& serviceLocator)
+             }
+ 
+             try {
+-                LOG(WARNING, "Creating session with %s", locator_test.getOriginalString().c_str());
++                LOG(WARNING, "Creating session with %s", locator.getOriginalString().c_str());
+                 Transport::SessionRef session = transports[i]->getSession(
+-                        &locator_test, sessionTimeoutMs);
++                        &locator, sessionTimeoutMs);
+                 if (isServer) {
+                     return new WorkerSession(context, session);
+                 }
